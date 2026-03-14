@@ -1,0 +1,366 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0d0d0d;
+    --surface: #111111;
+    --border: #1e1e1e;
+    --accent: #00e5ff;
+    --accent-dim: rgba(0, 229, 255, 0.08);
+    --text: #e0e0e0;
+    --muted: #555;
+    --font: 'Courier New', Courier, monospace;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    padding: 4rem 1.5rem;
+}
+
+/* ── layout ── */
+
+.container {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.container--wide {
+    max-width: 900px;
+}
+
+/* ── header ── */
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 2rem;
+    animation: pulse 2.5s ease-in-out infinite;
+}
+
+.name {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 0.4rem;
+}
+
+.name span {
+    color: var(--accent);
+}
+
+.role {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+}
+
+.divider {
+    width: 48px;
+    height: 1px;
+    background: var(--accent);
+    margin: 0 auto;
+    opacity: 0.4;
+}
+
+/* ── section titles ── */
+
+.section-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+
+/* ── terminal / arch ── */
+
+.arch-block {
+    margin-bottom: 3rem;
+}
+
+.terminal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem 1.5rem;
+    text-align: left;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.arch-diagram pre {
+    line-height: 1.8;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.prompt {
+    color: var(--accent);
+    user-select: none;
+}
+
+.hl {
+    color: var(--text);
+}
+
+.accent-text {
+    color: var(--accent);
+}
+
+.muted-text {
+    color: var(--muted);
+}
+
+.mono {
+    font-family: var(--font);
+}
+
+/* ── cards ── */
+
+.cards-section {
+    margin-bottom: 3rem;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.4rem;
+    transition: border-color 0.2s;
+}
+
+.card:hover {
+    border-color: rgba(0, 229, 255, 0.3);
+}
+
+.card-icon {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    margin-bottom: 0.8rem;
+    opacity: 0.8;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.6rem;
+}
+
+.card-desc {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.card-list {
+    list-style: none;
+    font-size: 0.8rem;
+    line-height: 2;
+    color: var(--muted);
+}
+
+/* ── pipeline ── */
+
+.pipeline-section {
+    margin-bottom: 3rem;
+}
+
+.pipeline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.pipeline-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 90px;
+}
+
+.pipeline-step--conditional {
+    border-color: rgba(0, 229, 255, 0.25);
+}
+
+.step-num {
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.2rem;
+}
+
+.step-name {
+    font-size: 0.8rem;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.step-desc {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+}
+
+.pipeline-arrow {
+    color: var(--muted);
+    font-size: 1rem;
+}
+
+/* ── resources table ── */
+
+.resources-section {
+    margin-bottom: 3rem;
+}
+
+.resources-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.resources-table th {
+    text-align: left;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.resources-table td {
+    padding: 0.75rem 1rem;
+    color: #777;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.resources-table tr:last-child td {
+    border-bottom: none;
+}
+
+.resources-table tr:hover td {
+    background: var(--surface);
+}
+
+.tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 2px;
+    padding: 0.15rem 0.45rem;
+    white-space: nowrap;
+}
+
+/* ── footer ── */
+
+.page-footer {
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.social {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.social a {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.social a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* ── grid background ── */
+
+.grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: -1;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 20%, #000 40%, transparent 100%);
+}
+
+/* ── animations ── */
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ── responsive ── */
+
+@media (max-width: 600px) {
+    .pipeline {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pipeline-arrow {
+        transform: rotate(90deg);
+    }
+
+    .resources-table th:last-child,
+    .resources-table td:last-child {
+        display: none;
+    }
+}

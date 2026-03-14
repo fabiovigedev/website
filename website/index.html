@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="fabiovigedev.com.br - Infraestrutura">
+    <title>fabiovigedev — Infra</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="grid-bg" aria-hidden="true"></div>
+
+    <main class="container container--wide">
+
+        <header class="page-header">
+            <div class="badge">infra / stack</div>
+            <h1 class="name">fabiovigedev<span>.com.br</span></h1>
+            <p class="role">Infrastructure as Code · AWS · CI/CD</p>
+            <div class="divider"></div>
+        </header>
+
+        <section class="arch-block">
+            <h2 class="section-title">Arquitetura</h2>
+            <div class="terminal arch-diagram" role="img" aria-label="Diagrama de arquitetura">
+                <pre>
+<span class="prompt">GitHub Actions</span>
+    └── OIDC → <span class="hl">GithubInfraRole</span> (AWS IAM)
+                    └── <span class="hl">Terraform</span>
+                            ├── S3  — state remoto + lock
+                            ├── ECR — <span class="accent-text">website-prod</span>
+                            └── EC2 — <span class="accent-text">website_server</span> (t3.micro)
+                                        └── IAM Role → ECR ReadOnly
+                </pre>
+            </div>
+        </section>
+
+        <section class="cards-section">
+            <h2 class="section-title">Stack</h2>
+            <div class="cards">
+
+                <article class="card">
+                    <div class="card-icon">TF</div>
+                    <h3 class="card-title">Terraform</h3>
+                    <p class="card-desc">Toda a infra provisionada como código. State remoto no S3 com versionamento e criptografia AES256. Lock nativo via S3.</p>
+                    <ul class="card-list">
+                        <li><span class="prompt">›</span> backend S3 <span class="muted-text">us-east-2</span></li>
+                        <li><span class="prompt">›</span> provider AWS <span class="muted-text">~> 5.0</span></li>
+                        <li><span class="prompt">›</span> versão <span class="muted-text">>= 1.10</span></li>
+                    </ul>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon">AWS</div>
+                    <h3 class="card-title">AWS</h3>
+                    <p class="card-desc">Região us-east-2. EC2 t3.micro servindo o site via Docker. ECR armazenando a imagem. IAM Role com permissão mínima de leitura.</p>
+                    <ul class="card-list">
+                        <li><span class="prompt">›</span> EC2 <span class="muted-text">t3.micro · Amazon Linux</span></li>
+                        <li><span class="prompt">›</span> ECR <span class="muted-text">website-prod</span></li>
+                        <li><span class="prompt">›</span> S3 <span class="muted-text">terraform-state-fabiovigedev</span></li>
+                        <li><span class="prompt">›</span> IAM <span class="muted-text">ec2-ecr-role (readonly)</span></li>
+                    </ul>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon">GH</div>
+                    <h3 class="card-title">GitHub Actions</h3>
+                    <p class="card-desc">Pipeline manual via workflow_dispatch. Autenticação sem senha usando OIDC — nenhuma AWS key armazenada como secret.</p>
+                    <ul class="card-list">
+                        <li><span class="prompt">›</span> trigger <span class="muted-text">workflow_dispatch</span></li>
+                        <li><span class="prompt">›</span> auth <span class="muted-text">OIDC → GithubInfraRole</span></li>
+                        <li><span class="prompt">›</span> inputs <span class="muted-text">apply / plan_destroy / destroy</span></li>
+                    </ul>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="pipeline-section">
+            <h2 class="section-title">Pipeline CI/CD</h2>
+            <div class="pipeline">
+                <div class="pipeline-step">
+                    <span class="step-num">01</span>
+                    <span class="step-name">Checkout</span>
+                    <span class="step-desc">Baixa o código</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">02</span>
+                    <span class="step-name">OIDC Auth</span>
+                    <span class="step-desc">Assume GithubInfraRole</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">03</span>
+                    <span class="step-name">TF Init</span>
+                    <span class="step-desc">Backend S3</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">04</span>
+                    <span class="step-name">Validate + Fmt</span>
+                    <span class="step-desc">Lint e formatação</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">05</span>
+                    <span class="step-name">Plan</span>
+                    <span class="step-desc">Preview sempre</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step pipeline-step--conditional">
+                    <span class="step-num">06</span>
+                    <span class="step-name">Apply</span>
+                    <span class="step-desc">se apply=true</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="resources-section">
+            <h2 class="section-title">Recursos Provisionados</h2>
+            <table class="resources-table">
+                <thead>
+                    <tr>
+                        <th>Recurso</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="tag">S3</span></td>
+                        <td class="mono">terraform-state-fabiovigedev</td>
+                        <td>State remoto com versioning + criptografia</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag">ECR</span></td>
+                        <td class="mono">website-prod</td>
+                        <td>Registry de imagens Docker</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag">EC2</span></td>
+                        <td class="mono">website_server</td>
+                        <td>Servidor t3.micro · Amazon Linux</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag">IAM</span></td>
+                        <td class="mono">ec2-ecr-role</td>
+                        <td>Permite EC2 puxar imagens do ECR</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag">SG</span></td>
+                        <td class="mono">website-sg</td>
+                        <td>SSH restrito ao IP do owner · HTTP/HTTPS aberto</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag">IAM</span></td>
+                        <td class="mono">GithubInfraRole</td>
+                        <td>OIDC trust para GitHub Actions · gerenciado no bootstrap</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer class="page-footer">
+            <nav class="social" aria-label="Links">
+                <a href="https://github.com/fabiovige" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://linkedin.com/in/fabiovige" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </nav>
+        </footer>
+
+    </main>
+</body>
+</html>

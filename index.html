@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="fabiovigedev.com.br - Em breve">
+    <title>fabiovigedev — Em breve</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0d0d;
+            --surface: #111111;
+            --border: #1e1e1e;
+            --accent: #00e5ff;
+            --accent-dim: rgba(0, 229, 255, 0.08);
+            --text: #e0e0e0;
+            --muted: #555;
+            --font: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 640px;
+            width: 100%;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 2px;
+            padding: 0.3rem 0.8rem;
+            margin-bottom: 2.5rem;
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        .name {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin-bottom: 0.4rem;
+        }
+
+        .name span {
+            color: var(--accent);
+        }
+
+        .role {
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+
+        .divider {
+            width: 48px;
+            height: 1px;
+            background: var(--accent);
+            margin: 0 auto 3rem;
+            opacity: 0.4;
+        }
+
+        .message {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #888;
+            margin-bottom: 3rem;
+        }
+
+        .message strong {
+            color: var(--text);
+        }
+
+        .terminal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .terminal .prompt {
+            color: var(--accent);
+            user-select: none;
+        }
+
+        .terminal .cmd {
+            color: var(--text);
+        }
+
+        .terminal .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: var(--accent);
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+
+        .social {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .social a {
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .social a:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: -1;
+            mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 40%, transparent 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg" aria-hidden="true"></div>
+
+    <main class="container">
+        <div class="badge">Em desenvolvimento</div>
+
+        <h1 class="name">fabiovigedev<span>.com.br</span></h1>
+        <p class="role">Software Engineer</p>
+
+        <div class="divider"></div>
+
+        <p class="message">
+            Algo novo está sendo construído aqui.<br>
+            <strong>Em breve o site estará no ar.</strong>
+        </p>
+
+        <div class="terminal" role="status" aria-label="Status do projeto">
+            <span class="prompt">$ </span>
+            <span class="cmd">npm run build -- --site fabiovigedev.com.br</span><br>
+            <span class="prompt">→ </span>
+            <span style="color:#00c853">building</span>
+            <span class="cursor" aria-hidden="true"></span>
+        </div>
+
+        <nav class="social" aria-label="Links">
+            <a href="https://github.com/fabiovige" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://linkedin.com/in/fabiovige" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </nav>
+    </main>
+</body>
+</html>

@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   job1:
-    name: Deploy to Production ECR
+    name: build_ecr
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,3 +33,26 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  job2:
+    name: deploy_ec2
+    needs: job1
+    env:
+      IP_PUBLIC: ${{ secrets.IP_PUBLIC }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+      IMAGE: 448049815254.dkr.ecr.us-east-2.amazonaws.com/website-prod:${{ github.sha }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Deploy EC2 SSH"
+        run: |
+          echo "$SSH_PRIVATE_KEY" > chave-site-prod.pem
+          chmod 400 chave-site-prod.pem
+          ssh -o StrictHostKeyChecking=no -i chave-site-prod.pem ec2-user@$IP_PUBLIC << EOF
+            aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 448049815254.dkr.ecr.us-east-2.amazonaws.com
+            docker pull $IMAGE
+            docker stop website-prod || true
+            docker rm website-prod || true
+            docker run -d --name website-prod -p 80:80 --restart always $IMAGE
+            docker ps -a
+          EOF
+          rm -f chave-site-prod.pem

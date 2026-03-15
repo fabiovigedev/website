@@ -32,3 +32,12 @@ CSS custom properties defined in `:root`:
 - `--font: 'Courier New'` — monospace throughout
 
 Keep the dark terminal aesthetic when adding new visual elements.
+
+## CI/CD
+
+`.github/workflows/deploy.yml` — triggered on push to `main`:
+1. Assumes AWS role `GithubActionsRepoWebsite` via OIDC (no static credentials)
+2. Logs into ECR (`us-east-2`, account `448049815254`)
+3. Builds and pushes image to `website-prod` repository tagged with `github.sha`
+
+To deploy: merge to `main`. There is no staging environment.

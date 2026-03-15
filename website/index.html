@@ -24,12 +24,12 @@
             <div class="terminal arch-diagram" role="img" aria-label="Diagrama de arquitetura">
                 <pre>
 <span class="prompt">GitHub Actions</span>
-    └── OIDC → <span class="hl">GithubInfraRole</span> (AWS IAM)
-                    └── <span class="hl">Terraform</span>
-                            ├── S3  — state remoto + lock
-                            ├── ECR — <span class="accent-text">website-prod</span>
-                            └── EC2 — <span class="accent-text">website_server</span> (t3.micro)
-                                        └── IAM Role → ECR ReadOnly
+    ├── [infra]  OIDC → <span class="hl">GithubInfraRole</span> → <span class="hl">Terraform</span>
+    │                       ├── S3  — state remoto + lock
+    │                       ├── ECR — <span class="accent-text">website-prod</span>
+    │                       └── EC2 — <span class="accent-text">website_server</span> (t3.micro)
+    │                                   └── IAM Role → ECR ReadOnly
+    └── [deploy] push → main → build → ECR push → SSH → <span class="accent-text">EC2</span>
                 </pre>
             </div>
         </section>
@@ -64,11 +64,11 @@
                 <article class="card">
                     <div class="card-icon">GH</div>
                     <h3 class="card-title">GitHub Actions</h3>
-                    <p class="card-desc">Pipeline manual via workflow_dispatch. Autenticação sem senha usando OIDC — nenhuma AWS key armazenada como secret.</p>
+                    <p class="card-desc">Dois pipelines automatizados. Infra via OIDC sem AWS keys. Deploy contínuo a cada push na main — build, ECR push e atualização na EC2 via SSH.</p>
                     <ul class="card-list">
-                        <li><span class="prompt">›</span> trigger <span class="muted-text">workflow_dispatch</span></li>
+                        <li><span class="prompt">›</span> infra <span class="muted-text">workflow_dispatch → Terraform</span></li>
+                        <li><span class="prompt">›</span> deploy <span class="muted-text">push main → EC2</span></li>
                         <li><span class="prompt">›</span> auth <span class="muted-text">OIDC → GithubInfraRole</span></li>
-                        <li><span class="prompt">›</span> inputs <span class="muted-text">apply / plan_destroy / destroy</span></li>
                     </ul>
                 </article>
 
@@ -76,7 +76,7 @@
         </section>
 
         <section class="pipeline-section">
-            <h2 class="section-title">Pipeline CI/CD</h2>
+            <h2 class="section-title">Pipeline — Infra</h2>
             <div class="pipeline">
                 <div class="pipeline-step">
                     <span class="step-num">01</span>
@@ -112,6 +112,41 @@
                     <span class="step-num">06</span>
                     <span class="step-name">Apply</span>
                     <span class="step-desc">se apply=true</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="pipeline-section">
+            <h2 class="section-title">Pipeline — Deploy</h2>
+            <div class="pipeline">
+                <div class="pipeline-step">
+                    <span class="step-num">01</span>
+                    <span class="step-name">push main</span>
+                    <span class="step-desc">trigger automático</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">02</span>
+                    <span class="step-name">OIDC Auth</span>
+                    <span class="step-desc">Assume role ECR</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">03</span>
+                    <span class="step-name">Docker Build</span>
+                    <span class="step-desc">tag = github.sha</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">04</span>
+                    <span class="step-name">ECR Push</span>
+                    <span class="step-desc">website-prod</span>
+                </div>
+                <div class="pipeline-arrow">→</div>
+                <div class="pipeline-step">
+                    <span class="step-num">05</span>
+                    <span class="step-name">SSH → EC2</span>
+                    <span class="step-desc">pull + restart</span>
                 </div>
             </div>
         </section>

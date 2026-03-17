@@ -9,14 +9,14 @@ permissions:
   contents: read
 
 jobs:
-  job1:
+  build_ecr:
     name: build_ecr
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: "Configure AWS Credentials"
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::448049815254:role/GithubActionsRepoWebsite
@@ -39,16 +39,30 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-  job2:
+  deploy_ec2:
     name: deploy_ec2
-    needs: job1
+    needs: build_ecr
+    runs-on: ubuntu-latest
     env:
       IP_PUBLIC: ${{ secrets.IP_PUBLIC }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
       IMAGE: 448049815254.dkr.ecr.us-east-2.amazonaws.com/website-prod:${{ github.sha }}
-    runs-on: ubuntu-latest
     steps:
-      - name: "Deploy EC2 SSH"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::448049815254:role/GithubActionsRepoWebsite
+          aws-region: us-east-2
+
+      - name: Allow runner IP on security group
+        run: |
+          RUNNER_IP=$(curl -s https://checkip.amazonaws.com)
+          echo "RUNNER_IP=$RUNNER_IP" >> $GITHUB_ENV
+          SG_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=website-sg" --query 'SecurityGroups[0].GroupId' --output text --region us-east-2)
+          echo "SG_ID=$SG_ID" >> $GITHUB_ENV
+          aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 22 --cidr ${RUNNER_IP}/32 --region us-east-2
+
+      - name: Deploy EC2 SSH
         run: |
           echo "$SSH_PRIVATE_KEY" > chave-site-prod.pem
           chmod 400 chave-site-prod.pem
@@ -61,3 +75,8 @@ jobs:
             docker ps -a
           EOF
           rm -f chave-site-prod.pem
+
+      - name: Revoke runner IP from security group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id $SG_ID --protocol tcp --port 22 --cidr ${RUNNER_IP}/32 --region us-east-2

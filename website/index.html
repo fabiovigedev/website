@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="fabiovigedev.com.br - Infraestrutura">
-    <title>Fabio Vige Dev - Teste 03</title>
+    <title>FabioVigeDev - Simplicidade e funcionalidade caminham juntos.</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+        <span class="theme-toggle__icon">○</span>
+    </button>
     <div class="grid-bg" aria-hidden="true"></div>
 
     <main class="container container--wide">
@@ -23,6 +26,11 @@
             <h2 class="section-title">Arquitetura</h2>
             <div class="terminal arch-diagram" role="img" aria-label="Diagrama de arquitetura">
                 <pre>
+<span class="prompt">DNS</span>
+    registro.br → <span class="hl">Cloudflare</span> (nameservers)
+                    └── A record → <span class="accent-text">Elastic IP</span> (fixo)
+                                        └── <span class="accent-text">EC2</span> website_server (t3.micro)
+
 <span class="prompt">GitHub Actions</span>
     ├── [infra]  OIDC → <span class="hl">GithubInfraRole</span> → <span class="hl">Terraform</span>
     │                       ├── S3  — state remoto + lock
@@ -52,12 +60,24 @@
                 <article class="card">
                     <div class="card-icon">AWS</div>
                     <h3 class="card-title">AWS</h3>
-                    <p class="card-desc">Região us-east-2. EC2 t3.micro servindo o site via Docker. ECR armazenando a imagem. IAM Role com permissão mínima de leitura.</p>
+                    <p class="card-desc">Região us-east-2. EC2 t3.micro com Elastic IP fixo servindo o site via Docker. ECR armazenando a imagem. IAM Role com permissão mínima de leitura.</p>
                     <ul class="card-list">
                         <li><span class="prompt">›</span> EC2 <span class="muted-text">t3.micro · Amazon Linux</span></li>
+                        <li><span class="prompt">›</span> Elastic IP <span class="muted-text">IP fixo · sobrevive a reinicializações</span></li>
                         <li><span class="prompt">›</span> ECR <span class="muted-text">website-prod</span></li>
                         <li><span class="prompt">›</span> S3 <span class="muted-text">terraform-state-fabiovigedev</span></li>
                         <li><span class="prompt">›</span> IAM <span class="muted-text">ec2-ecr-role (readonly)</span></li>
+                    </ul>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon">CF</div>
+                    <h3 class="card-title">Cloudflare</h3>
+                    <p class="card-desc">DNS gerenciado pelo Cloudflare. Registro.br aponta os nameservers para o Cloudflare, que resolve o domínio para o Elastic IP da EC2.</p>
+                    <ul class="card-list">
+                        <li><span class="prompt">›</span> registro.br <span class="muted-text">nameservers → Cloudflare</span></li>
+                        <li><span class="prompt">›</span> A record <span class="muted-text">fabiovigedev.com.br → Elastic IP</span></li>
+                        <li><span class="prompt">›</span> A record <span class="muted-text">www → Elastic IP</span></li>
                     </ul>
                 </article>
 
@@ -192,6 +212,16 @@
                         <td class="mono">GithubInfraRole</td>
                         <td>OIDC trust para GitHub Actions · gerenciado no bootstrap</td>
                     </tr>
+                    <tr>
+                        <td><span class="tag">EIP</span></td>
+                        <td class="mono">Elastic IP</td>
+                        <td>IP fixo associado à EC2 · não muda ao reiniciar</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag">DNS</span></td>
+                        <td class="mono">Cloudflare</td>
+                        <td>Gerencia DNS do fabiovigedev.com.br · nameservers via registro.br</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -211,5 +241,6 @@
         </footer>
 
     </main>
+    <script src="js/theme.js"></script>
 </body>
 </html>

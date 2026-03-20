@@ -15,12 +15,23 @@
     --font: 'Courier New', Courier, monospace;
 }
 
+[data-theme="light"] {
+    --bg: #f4f4f4;
+    --surface: #ffffff;
+    --border: #ddd;
+    --accent: #007acc;
+    --accent-dim: rgba(0, 122, 204, 0.08);
+    --text: #1a1a1a;
+    --muted: #888;
+}
+
 body {
     background-color: var(--bg);
     color: var(--text);
     font-family: var(--font);
     min-height: 100vh;
     padding: 4rem 1.5rem;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 /* ── layout ── */
@@ -289,6 +300,31 @@ body {
     border-radius: 2px;
     padding: 0.15rem 0.45rem;
     white-space: nowrap;
+}
+
+/* ── theme toggle ── */
+
+.theme-toggle {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 1rem;
+    z-index: 100;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent);
 }
 
 /* ── footer ── */

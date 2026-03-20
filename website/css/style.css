@@ -310,19 +310,19 @@ body {
     left: 0;
     right: 0;
     z-index: 100;
-    border-bottom: 1px solid transparent;
-    transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s, backdrop-filter 0.3s;
 }
 
 .site-header.scrolled {
-    background: rgba(13, 13, 13, 0.75);
+    background: rgba(13, 13, 13, 0.8);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border-bottom-color: var(--border);
 }
 
 [data-theme="light"] .site-header.scrolled {
-    background: rgba(244, 244, 244, 0.8);
+    background: rgba(244, 244, 244, 0.85);
 }
 
 [data-theme="light"] .site-header__logo {

@@ -25,10 +25,12 @@ jobs:
       - name: Login to Amazon ECR for Github Action
         uses: aws-actions/amazon-ecr-login@v2.0.1
 
-      - name: Inject build datetime into HTML
+      - name: Inject build datetime and production asset URLs into HTML
         run: |
           BUILD_DATETIME=$(TZ="America/Sao_Paulo" date "+%d/%m/%Y às %H:%M")
           sed -i "s|{{BUILD_DATETIME}}|$BUILD_DATETIME|g" website/index.html
+          sed -i 's|href="css/|href="https://www.fabiovigedev.com.br/css/|g' website/index.html
+          sed -i 's|src="js/|src="https://www.fabiovigedev.com.br/js/|g' website/index.html
 
       - name: Build, tag, and push image to Amazon ECR
         env:

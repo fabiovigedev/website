@@ -22,7 +22,7 @@
     --accent: #007acc;
     --accent-dim: rgba(0, 122, 204, 0.08);
     --text: #1a1a1a;
-    --muted: #888;
+    --muted: #444;
 }
 
 body {
@@ -289,7 +289,7 @@ body {
 .card-desc {
     font-size: 0.8rem;
     line-height: 1.7;
-    color: #666;
+    color: var(--muted);
     margin-bottom: 1rem;
 }
 
@@ -357,6 +357,11 @@ body {
     margin-bottom: 3rem;
 }
 
+.resources-section .card {
+    padding: 0;
+    overflow: hidden;
+}
+
 .resources-table {
     width: 100%;
     border-collapse: collapse;
@@ -369,13 +374,13 @@ body {
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--muted);
-    padding: 0.6rem 1rem;
+    padding: 0.75rem 1.4rem;
     border-bottom: 1px solid var(--border);
 }
 
 .resources-table td {
-    padding: 0.75rem 1rem;
-    color: #777;
+    padding: 0.75rem 1.4rem;
+    color: var(--muted);
     border-bottom: 1px solid var(--border);
     vertical-align: middle;
 }
